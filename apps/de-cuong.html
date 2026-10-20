@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Đề Cương Tiếng Anh 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: lịch 30 ngày bên trái (trên điện thoại là dải ngày cuộn ngang), bài học của ngày đang chọn bên phải */
+:root{
+  --bg:#f2f6fb; --surface:#ffffff; --ink:#1d2b3d; --muted:#5f6f84; --line:#d9e3ef;
+  --accent:#2f7fd8; --accent-ink:#ffffff; --accent-soft:#e6f0fc;
+  --slow:#1d9a5a; --slow-soft:#e3f6ec; --sun:#ffc93c; --sun-ink:#3d2d00; --sun-soft:#fff5d6;
+  --done:#1d9a5a; --review:#d9822b; --speaking:#fff1b8;
+  --display:"Baloo 2","Nunito",system-ui,sans-serif;
+  --body:"Nunito",system-ui,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12171e; --surface:#1b222c; --ink:#e6edf5; --muted:#9aa9bb; --line:#2c3644;
+  --accent:#4a95e8; --accent-ink:#ffffff; --accent-soft:#1d2d42;
+  --slow:#43c27f; --slow-soft:#163024; --sun:#f5bd2e; --sun-ink:#2b1f00; --sun-soft:#3a3016;
+  --done:#43c27f; --review:#f0a050; --speaking:#4a3f12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171e; --surface:#1b222c; --ink:#e6edf5; --muted:#9aa9bb; --line:#2c3644;
+  --accent:#4a95e8; --accent-ink:#ffffff; --accent-soft:#1d2d42;
+  --slow:#43c27f; --slow-soft:#163024; --sun:#f5bd2e; --sun-ink:#2b1f00; --sun-soft:#3a3016;
+  --done:#43c27f; --review:#f0a050; --speaking:#4a3f12; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding:12px 16px 40px}
+.wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;align-items:start}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(24px,4vw,32px);line-height:1.1;margin:0 0 2px;text-wrap:balance}
+.sub{color:var(--muted);font-weight:700;margin:0;font-size:14px}
+/* Lịch ngày */
+.days{position:sticky;top:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.days-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.day{border:2px solid var(--line);background:var(--surface);color:var(--ink);font:800 15px var(--body);height:38px;border-radius:10px;cursor:pointer;position:relative;font-variant-numeric:tabular-nums;padding:0}
+.day.week{border-style:dashed}
+.day[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.day.done::after,.day.review::after{content:"";position:absolute;right:3px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--done)}
+.day.review::after{background:var(--review)}
+.legend{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted);font-weight:700}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.count{font-weight:800;font-size:14px}
+/* Bài học */
+.lesson{display:flex;flex-direction:column;gap:16px;min-width:0}
+.lesson-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,5vw,40px);line-height:1.05;margin:0;text-wrap:balance}
+.navbtns{display:flex;gap:6px}
+.btn{border:0;border-radius:12px;padding:9px 14px;font:800 15px var(--body);cursor:pointer;background:var(--accent-soft);color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.4;cursor:default}
+button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+section.block{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
+h3{font-family:var(--display);font-size:22px;margin:0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.word{border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;transition:background .2s}
+.word .en{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.15;color:var(--accent)}
+.word .vi{font-weight:700;color:var(--muted)}
+.speak{display:flex;gap:6px;margin-top:auto}
+.say,.slow{border:0;border-radius:10px;padding:6px 10px;font:800 14px var(--body);cursor:pointer;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.slow{background:var(--slow-soft);color:var(--slow)}
+.know{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.know li{background:var(--accent-soft);border-radius:10px;padding:8px 12px;font-weight:700}
+.know b{color:var(--accent)}
+.note{background:var(--sun-soft);border-radius:14px;padding:10px 14px;font-weight:700}
+.note b{color:var(--ink)}
+.examples{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ex{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px 12px;transition:background .2s}
+.ex .num{font-family:var(--display);font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.ex .en{font-weight:800;font-size:18px;line-height:1.3}
+.ex .vi{color:var(--muted);font-weight:700;font-size:15px}
+.speaking{background:var(--speaking)!important}
+.tasks{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;font-weight:700}
+.answer{border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.answer p{margin:0;background:var(--slow-soft);border-radius:12px;padding:10px 12px;font-weight:700}
+.track{display:flex;gap:8px;flex-wrap:wrap}
+.check{display:flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer;user-select:none}
+.check input{width:18px;height:18px;accent-color:var(--accent);margin:0}
+.rate{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:700;font-size:14px}
+.rate button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:4px 10px;font:800 13px var(--body);cursor:pointer}
+.rate button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.warn{color:var(--review);font-weight:700;font-size:14px}
+@media (max-width:760px){
+  .wrap{grid-template-columns:1fr}
+  .days{position:static}
+  .days-grid{display:flex;overflow-x:auto;padding-bottom:4px}
+  .day{flex:0 0 42px}
+  .ex{grid-template-columns:22px minmax(0,1fr)}
+  .ex .speak{grid-column:2}
+}
+@media (prefers-reduced-motion:reduce){.word,.ex{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside class="days">
+    <div><h1>Đề Cương 30 Ngày</h1><p class="sub">Tiếng Anh lớp 4 · mỗi ngày 25–35 phút</p></div>
+    <div class="days-grid" id="days" role="list"></div>
+    <div class="count" id="count"></div>
+    <div class="legend"><span><i style="background:var(--done)"></i>Đã học và làm bài</span><span><i style="background:var(--review)"></i>Cần ôn lại</span><span>Ô viền nét đứt: ngày ôn tập</span></div>
+  </aside>
+
+  <main class="lesson">
+    <div class="lesson-head">
+      <div><div class="eyebrow" id="eyebrow"></div><h2 id="title"></h2></div>
+      <div class="navbtns"><button class="btn" id="prev">← Hôm trước</button><button class="btn" id="next">Hôm sau →</button></div>
+    </div>
+
+    <div class="rate" id="rate">Tốc độ đọc chậm:
+      <button data-rate="0.5">Rất chậm</button><button data-rate="0.65">Chậm</button>
+    </div>
+    <p class="warn" id="noVoice" hidden>Trình duyệt này không đọc được tiếng Anh. Hãy mở bằng Chrome hoặc Edge.</p>
+
+    <section class="block">
+      <h3>Từ vựng / kiến thức</h3>
+      <div class="vocab" id="vocab"></div>
+      <ul class="know" id="know"></ul>
+      <div class="note" id="note"></div>
+    </section>
+
+    <section class="block">
+      <h3>A. Câu mẫu – đọc to và dịch <button class="btn primary" id="playAll">▶ Nghe cả 6 câu</button></h3>
+      <ol class="examples" id="examples"></ol>
+    </section>
+
+    <section class="block">
+      <h3>B. Bài tập thực hành</h3>
+      <ol class="tasks" id="tasks"></ol>
+      <div class="answer"><button class="btn" id="showAns" aria-expanded="false">Xem đáp án tham khảo</button><p id="ans" hidden></p></div>
+    </section>
+
+    <section class="block">
+      <h3>Theo dõi tiến độ</h3>
+      <div class="track">
+        <label class="check"><input type="checkbox" id="c-hoc"> Đã học</label>
+        <label class="check"><input type="checkbox" id="c-bai"> Đã làm bài</label>
+        <label class="check"><input type="checkbox" id="c-on"> Cần ôn lại</label>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+// Nội dung lấy từ "Đề cương ôn Tiếng Anh lớp 4 – 30 ngày".
+// v: từ có nút nghe [tiếng Anh, nghĩa]; k: kiến thức chỉ đọc [tên, giải thích]; ex: câu mẫu; bt: bài tập; da: đáp án
+const NOTE_DEFAULT="Đọc kỹ nghĩa và trật tự từ; thử thay tên người hoặc đồ vật để tự tạo câu mới.";
+const DAYS=[
+{t:"Đại từ nhân xưng",v:[["I","tôi / mình / em"],["you","bạn / các bạn"],["he","anh ấy / cậu ấy"],["she","cô ấy / chị ấy"],["it","nó (đồ vật / con vật)"],["we","chúng tôi / chúng ta / chúng em"],["they","họ / chúng nó"]],
+ ex:[["I am a pupil.","Em là học sinh."],["You are my friend.","Bạn là bạn của tôi."],["He is Nam.","Bạn ấy là Nam."],["She is my sister.","Cô ấy là chị/em gái tôi."],["They are my classmates.","Họ là bạn cùng lớp."],["We are happy.","Chúng em vui."]],
+ bt:["Điền đại từ: ___ am Lan.","Điền: ___ is my mother.","Dịch: They are my friends.","Chọn: (He/She) is my father.","Viết 2 câu với I và we."],da:"I; She; “Họ là bạn của tôi”; He."},
+{t:"Am / is / are",v:[["I am","tôi / em là"],["he / she / it is","anh ấy / cô ấy / nó là"],["you / we / they are","bạn / chúng tôi / họ là"]],n:"I đi với am; he/she/it đi với is; you/we/they đi với are.",
+ ex:[["I am ten years old.","Em 10 tuổi."],["She is happy.","Cô ấy vui."],["He is at school.","Bạn ấy ở trường."],["We are ready.","Chúng em sẵn sàng."],["They are good students.","Họ là học sinh giỏi."],["My books are new.","Sách của em mới."]],
+ bt:["I ___ a student.","My brother ___ tall.","You ___ kind.","Dịch: Chúng em vui.","Viết 3 câu với am/is/are."],da:"am; is; are; “We are happy.”"},
+{t:"Chào hỏi và giới thiệu",v:[["Hello","xin chào"],["Hi","chào (thân mật)"],["Good morning","chào buổi sáng"],["What's your name?","Bạn tên là gì?"],["Nice to meet you","rất vui được gặp bạn"]],
+ ex:[["Hello! My name is Minh.","Xin chào! Tên tôi là Minh."],["What's your name?","Bạn tên gì?"],["I'm nine years old.","Tôi 9 tuổi."],["Nice to meet you.","Rất vui được gặp bạn."],["How are you? I'm fine, thank you.","Bạn khỏe không? Tôi khỏe, cảm ơn."],["This is my friend, Lan.","Đây là bạn tôi, Lan."]],
+ bt:["My name ___ Hoa.","Trả lời: What's your name?","Dịch: Rất vui được gặp bạn.","Sắp xếp: name / is / My / An.","Viết đoạn tự giới thiệu 3 câu."],da:"is; “Nice to meet you”; “My name is An.”"},
+{t:"Số đếm và tuổi",v:[["one","một (1)"],["two","hai (2)"],["three","ba (3)"],["four","bốn (4)"],["five","năm (5)"],["six","sáu (6)"],["seven","bảy (7)"],["eight","tám (8)"],["nine","chín (9)"],["ten","mười (10)"]],
+ ex:[["How old are you?","Bạn bao nhiêu tuổi?"],["I am ten years old.","Em 10 tuổi."],["I have two pencils.","Em có hai bút chì."],["There are five books.","Có năm quyển sách."],["I am in class 4.","Em học lớp 4."],["My brother is eight.","Em trai em 8 tuổi."]],
+ bt:["Viết bằng chữ: 4, 7, 9.","I am ___ years old. (10)","Dịch: Tôi có ba quyển sách.","Trả lời: How old are you?","Viết 2 câu có số đếm."],da:"four, seven, nine; “I have three books.”"},
+{t:"Màu sắc và đồ dùng",v:[["red","màu đỏ"],["blue","màu xanh dương"],["green","màu xanh lá cây"],["yellow","màu vàng"],["book","quyển sách"],["pen","bút"],["ruler","thước kẻ"]],n:"Dùng a/an với danh từ số ít; an thường đứng trước âm nguyên âm.",
+ ex:[["My bag is blue.","Cặp em màu xanh dương."],["This is a red pen.","Đây là cây bút đỏ."],["I have a ruler.","Em có một cây thước."],["The book is green.","Quyển sách màu xanh lá."],["It is a yellow pencil.","Đó là bút chì vàng."],["My pencil case is black.","Hộp bút của em màu đen."]],
+ bt:["Dịch: a blue bag.","My pen ___ red. (is/are)","This is (a/an) book.","Dịch: Em có một cây thước.","Viết 3 câu về đồ dùng."],da:"“a blue bag”; is; a; “I have a ruler.”"},
+{t:"Gia đình",v:[["father","bố / cha"],["mother","mẹ"],["brother","anh / em trai"],["sister","chị / em gái"],["family","gia đình"]],
+ ex:[["This is my family.","Đây là gia đình em."],["My father is kind.","Bố em tốt bụng."],["I have one brother.","Em có một anh/em trai."],["My mother is a teacher.","Mẹ em là giáo viên."],["I love my family.","Em yêu gia đình mình."],["My sister is eight.","Chị/em gái em 8 tuổi."]],
+ bt:["My ___ is my dad.","Dịch: Đây là mẹ tôi.","Chọn: (He/She) is my sister.","Viết 3 từ chỉ người thân.","Viết 3 câu về gia đình."],da:"father; “This is my mother”; She."},
+{t:"Ôn tập tuần 1",week:1,k:[["Đại từ","các từ thay thế cho tên người/vật"],["am / is / are","các dạng của động từ to be (là/thì/ở)"],["Chào hỏi","các câu dùng để chào và làm quen"],["Số","số đếm"],["Màu sắc","tên các màu"],["Gia đình","từ chỉ người thân"]],
+ ex:[["I am a pupil in class 4.","Em là học sinh lớp 4."],["My name is Mai.","Tên em là Mai."],["My sister is eight.","Em gái tôi 8 tuổi."],["We are happy.","Chúng em vui."],["My school bag is red.","Cặp em màu đỏ."],["I have two brothers.","Em có hai anh/em trai."]],
+ bt:["She ___ my sister.","Dịch: Tôi 10 tuổi.","Sắp xếp: are / We / happy.","Viết 5 từ đã học và nghĩa.","Tự giới thiệu 4 câu."],da:"is; “I am ten years old”; “We are happy.”"},
+{t:"Trường học và môn học",v:[["school","trường học"],["classroom","phòng học / lớp học"],["English","môn Tiếng Anh"],["Maths","môn Toán"],["Art","môn Mỹ thuật"],["Music","môn Âm nhạc"]],
+ ex:[["I go to school every day.","Em đi học mỗi ngày."],["English is my favourite subject.","Tiếng Anh là môn yêu thích."],["My classroom is big.","Lớp học của em rộng."],["I like Maths.","Em thích Toán."],["We study Science on Monday.","Chúng em học Khoa học thứ Hai."],["I have Music today.","Hôm nay em có Âm nhạc."]],
+ bt:["Dịch: classroom, Music, Science.","I like ___. (môn em thích)","My classroom (is/are) big.","Trả lời: What is your favourite subject?","Viết 3 câu về trường học."],da:"classroom = lớp học; Music = âm nhạc; Science = khoa học; is."},
+{t:"Ngày trong tuần",v:[["Monday","thứ Hai"],["Tuesday","thứ Ba"],["Wednesday","thứ Tư"],["Thursday","thứ Năm"],["Friday","thứ Sáu"],["Saturday","thứ Bảy"],["Sunday","Chủ nhật"]],n:"Tên ngày trong tuần viết hoa chữ cái đầu.",
+ ex:[["Today is Monday.","Hôm nay là thứ Hai."],["I have English on Tuesday.","Em có Tiếng Anh thứ Ba."],["We play football on Sunday.","Chúng em đá bóng Chủ nhật."],["Friday is a school day.","Thứ Sáu là ngày đi học."],["I visit my grandparents on Saturday.","Em thăm ông bà thứ Bảy."],["What day is it today?","Hôm nay là thứ mấy?"]],
+ bt:["Viết tiếng Anh: thứ Hai, thứ Tư, Chủ nhật.","Today ___ Friday. (is/are)","Dịch: Tôi học Tiếng Anh thứ Ba.","Trả lời: What day is it today?","Viết 3 câu với tên ngày."],da:"Monday, Wednesday, Sunday; is; “I have English on Tuesday.”"},
+{t:"Giới từ vị trí",v:[["in","ở trong"],["on","ở trên"],["under","ở dưới"],["next to","bên cạnh"],["behind","ở phía sau"]],
+ ex:[["The book is on the table.","Sách ở trên bàn."],["The cat is under the chair.","Mèo ở dưới ghế."],["The bag is next to the desk.","Cặp cạnh bàn."],["The ball is in the box.","Bóng ở trong hộp."],["The tree is behind the house.","Cây phía sau nhà."],["The teacher is in the classroom.","Giáo viên ở trong lớp."]],
+ bt:["The pen is ___ the desk. (trên)","Dịch: Con mèo ở dưới ghế.","The ball is (in/under) the box. (trong)","Viết câu về vị trí quyển sách.","Vẽ góc học tập và viết 3 câu."],da:"on; “The cat is under the chair”; in."},
+{t:"Have / has",v:[["I / you / we / they have","tôi / bạn / chúng tôi / họ có"],["he / she / it has","anh ấy / cô ấy / nó có"]],n:"He/she/it dùng has; các chủ ngữ còn lại dùng have.",
+ ex:[["I have a blue bag.","Em có cặp xanh."],["She has two sisters.","Cô ấy có hai chị/em gái."],["We have English today.","Hôm nay chúng em có Tiếng Anh."],["He has a new bike.","Bạn ấy có xe đạp mới."],["They have many books.","Họ có nhiều sách."],["My cat has green eyes.","Mèo của em có mắt xanh."]],
+ bt:["I ___ a pencil. (have/has)","She ___ a doll. (have/has)","Dịch: Anh ấy có xe đạp.","Sửa lỗi: He have a cat.","Viết 3 câu với have/has."],da:"have; has; “He has a bike”; “He has a cat.”"},
+{t:"Cơ thể và ngoại hình",v:[["head","đầu"],["eyes","mắt"],["ears","tai"],["nose","mũi"],["mouth","miệng"],["tall","cao"],["short","thấp / lùn"],["long hair","tóc dài"]],
+ ex:[["I have two eyes.","Em có hai mắt."],["She has long hair.","Cô ấy có tóc dài."],["He is tall.","Bạn ấy cao."],["My eyes are brown.","Mắt em màu nâu."],["The boy has short hair.","Cậu bé tóc ngắn."],["I have a small nose.","Em có chiếc mũi nhỏ."]],
+ bt:["Dịch: long hair, nose, tall.","She ___ long hair. (has/have)","He (is/are) tall.","Viết 3 từ chỉ bộ phận cơ thể.","Mô tả một người bằng 3 câu."],da:"long hair = tóc dài; nose = mũi; tall = cao; has; is."},
+{t:"Like / likes",v:[["I / you / we / they like","tôi / bạn / chúng tôi / họ thích"],["he / she / it likes","anh ấy / cô ấy / nó thích"]],n:"He/she/it dùng likes; I/you/we/they dùng like.",
+ ex:[["I like apples.","Em thích táo."],["She likes music.","Cô ấy thích âm nhạc."],["We like playing football.","Chúng em thích đá bóng."],["He likes cats.","Bạn ấy thích mèo."],["They like English.","Họ thích Tiếng Anh."],["My friend likes drawing.","Bạn em thích vẽ."]],
+ bt:["I ___ bananas. (like/likes)","He ___ drawing. (like/likes)","Dịch: Cô ấy thích âm nhạc.","Sửa lỗi: She like apples.","Viết 3 câu về điều em thích."],da:"like; likes; “She likes music”; “She likes apples.”"},
+{t:"Ôn tập tuần 2",week:1,k:[["Trường học","ôn từ vựng về trường học"],["Ngày","các ngày trong tuần"],["Giới từ","từ chỉ vị trí"],["have / has","có"],["like / likes","thích"]],
+ ex:[["I have English on Monday.","Em có Tiếng Anh thứ Hai."],["My book is on the desk.","Sách ở trên bàn."],["She likes Maths.","Cô ấy thích Toán."],["He has a red bag.","Bạn ấy có cặp đỏ."],["We are at school.","Chúng em ở trường."],["My ruler is in my bag.","Thước ở trong cặp."]],
+ bt:["He ___ a ruler. (have/has)","The cat is ___ the table. (dưới)","Sửa lỗi: She like Music.","Dịch: Tôi có Tiếng Anh thứ Hai.","Viết 5 câu đã học."],da:"has; under; “She likes Music”; “I have English on Monday.”"},
+{t:"Can / can't",v:[["can","có thể / biết làm gì"],["can't","không thể"]],n:"Sau can/can't, dùng động từ nguyên mẫu, không thêm s.",
+ ex:[["I can swim.","Em biết bơi."],["She can sing.","Cô ấy có thể hát."],["He can't fly.","Bạn ấy không thể bay."],["Can you ride a bike?","Bạn biết đi xe đạp không?"],["Yes, I can. No, I can't.","Có. / Không."],["A fish can swim.","Cá có thể bơi."]],
+ bt:["Birds ___ fly. (can/can't)","Sửa lỗi: She can sings.","Dịch: Tôi không thể bay.","Trả lời: Can you swim?","Viết 2 câu can và 2 câu can't."],da:"can; “She can sing”; “I can't fly.”"},
+{t:"Hoạt động hằng ngày và giờ",v:[["get up","thức dậy"],["go to school","đi học / đến trường"],["have breakfast","ăn sáng"],["go to bed","đi ngủ"]],
+ ex:[["I get up at six o'clock.","Em dậy lúc 6 giờ."],["I have breakfast at six thirty.","Em ăn sáng lúc 6 giờ 30."],["I go to school at seven.","Em đi học lúc 7 giờ."],["I do my homework in the evening.","Em làm bài buổi tối."],["I go to bed at nine.","Em đi ngủ lúc 9 giờ."],["I brush my teeth every morning.","Em đánh răng mỗi sáng."]],
+ bt:["Dịch: get up, go to bed.","I ___ to school at seven. (go/goes)","Viết bằng chữ: 6:00, 7:00.","Trả lời: What time do you get up?","Viết 4 câu về một ngày."],da:"get up = thức dậy; go to bed = đi ngủ; “I go to school at seven.”"},
+{t:"Hiện tại đơn khẳng định",v:[["I / you / we / they play","động từ giữ nguyên mẫu"],["he / she / it plays","động từ thêm -s"],["he / she / it watches","động từ thêm -es"]],n:"Ở hiện tại đơn, he/she/it thường thêm -s hoặc -es.",
+ ex:[["I play football after school.","Em đá bóng sau giờ học."],["They read books every day.","Họ đọc sách mỗi ngày."],["She walks to school.","Cô ấy đi bộ đến trường."],["He watches TV in the evening.","Bạn ấy xem TV buổi tối."],["My father works every day.","Bố em làm việc mỗi ngày."],["Lan studies English on Sunday.","Lan học Tiếng Anh Chủ nhật."]],
+ bt:["I ___ books. (read/reads)","She ___ to school. (walk/walks)","Dịch: Anh ấy xem TV buổi tối.","Sửa lỗi: He play football.","Viết 3 câu về thói quen."],da:"read; walks; “He watches TV in the evening”; “He plays football.”"},
+{t:"Hiện tại đơn phủ định và câu hỏi",v:[["don't","không (dùng với I / you / we / they)"],["doesn't","không (dùng với he / she / it)"],["Do you …?","câu hỏi với I / you / we / they"],["Does she …?","câu hỏi với he / she / it"]],n:"Sau doesn't, động từ chính không thêm s.",
+ ex:[["I don't like coffee.","Em không thích cà phê."],["She doesn't play tennis.","Cô ấy không chơi quần vợt."],["Do you like English?","Bạn thích Tiếng Anh không?"],["Does he go to school by bus?","Bạn ấy đi học bằng xe buýt không?"],["Yes, I do. No, I don't.","Có. / Không."],["He doesn't eat fish.","Bạn ấy không ăn cá."]],
+ bt:["I ___ like fish. (don't/doesn't)","___ she like music? (Do/Does)","Sửa lỗi: He doesn't likes cats.","Đổi phủ định: They play football.","Viết 2 câu hỏi Do/Does và trả lời."],da:"don't; Does; “He doesn't like cats”; “They don't play football.”"},
+{t:"Ôn hiện tại đơn",k:[["Khẳng định","câu nói điều gì đó là đúng / có xảy ra"],["Phủ định","câu nói điều gì đó không đúng / không xảy ra"],["Câu hỏi","câu dùng để hỏi"],["he / she / it","trong câu khẳng định, động từ thường thêm -s/-es"]],
+ ex:[["I do my homework after school.","Em làm bài sau giờ học."],["My sister reads every night.","Chị/em gái đọc sách mỗi tối."],["We don't play in the classroom.","Chúng em không chơi trong lớp."],["Does Nam like Maths?","Nam thích Toán không?"],["My mother cooks dinner.","Mẹ em nấu bữa tối."],["Do they play badminton?","Họ chơi cầu lông không?"]],
+ bt:["My brother (play/plays) chess.","They ___ (not like) milk.","Đặt câu hỏi: You like English.","Sửa lỗi: Does she likes cats?","Viết 5 câu: 2 khẳng định, 2 phủ định, 1 câu hỏi."],da:"plays; don't like; “Do you like English?”; “Does she like cats?”"},
+{t:"Từ để hỏi",v:[["What","gì / cái gì"],["Who","ai"],["Where","ở đâu"],["When","khi nào"],["How","như thế nào / bằng cách nào"],["How old","bao nhiêu tuổi"]],
+ ex:[["What is your name?","Bạn tên gì?"],["Who is that?","Kia là ai?"],["Where do you live?","Bạn sống ở đâu?"],["When is your birthday?","Sinh nhật khi nào?"],["How do you go to school?","Bạn đi học bằng cách nào?"],["How old is your brother?","Anh/em trai bạn bao nhiêu tuổi?"]],
+ bt:["___ is your name?","___ do you live?","Dịch: Bạn bao nhiêu tuổi?","Viết câu hỏi cho: I live in Hanoi.","Tự viết 4 câu hỏi và trả lời."],da:"What; Where; “How old are you?”; “Where do you live?”"},
+{t:"Đồ ăn và thức uống",v:[["rice","cơm / gạo"],["bread","bánh mì"],["chicken","thịt gà"],["fish","cá"],["milk","sữa"],["water","nước"],["apple","quả táo"],["banana","quả chuối"]],
+ ex:[["I like rice and chicken.","Em thích cơm và thịt gà."],["I drink water every day.","Em uống nước mỗi ngày."],["She likes bananas.","Cô ấy thích chuối."],["Would you like some milk?","Bạn có muốn uống sữa không?"],["Yes, please.","Vâng, làm ơn."],["I don't like fish.","Em không thích cá."]],
+ bt:["Dịch: bread, fish, water.","I ___ milk every morning. (drink/drinks)","Trả lời: What food do you like?","Viết 3 câu về thức ăn, đồ uống.","Phân loại 4 từ: food/drink."],da:"bread = bánh mì; fish = cá; water = nước; drink."},
+{t:"Con vật",v:[["dog","chó"],["cat","mèo"],["bird","chim"],["fish","cá"],["rabbit","thỏ"],["elephant","voi"],["monkey","khỉ"]],
+ ex:[["I have a small dog.","Em có chó nhỏ."],["Cats can climb.","Mèo có thể leo trèo."],["A bird can fly.","Chim có thể bay."],["Elephants are big.","Voi to lớn."],["My favourite animal is a rabbit.","Con vật yêu thích là thỏ."],["Monkeys like bananas.","Khỉ thích chuối."]],
+ bt:["Dịch: rabbit, monkey, elephant.","A bird ___ fly. (can/can't)","An elephant (is/are) big.","Trả lời: What is your favourite animal?","Viết 4 câu về một con vật."],da:"rabbit = thỏ; monkey = khỉ; elephant = voi; can; is."},
+{t:"Thời tiết và quần áo",v:[["sunny","có nắng / trời nắng"],["rainy","có mưa / trời mưa"],["windy","có gió / trời nhiều gió"],["cold","lạnh"],["hot","nóng"],["coat","áo khoác"],["hat","mũ"],["T-shirt","áo phông"]],
+ ex:[["It's sunny today.","Hôm nay trời nắng."],["It's cold. Put on your coat.","Trời lạnh, mặc áo khoác vào."],["I wear a hat in the sun.","Em đội mũ khi trời nắng."],["It's rainy today.","Hôm nay trời mưa."],["My T-shirt is blue.","Áo phông của em màu xanh."],["It's windy and cold.","Trời có gió và lạnh."]],
+ bt:["Dịch: sunny, windy, coat.","It's ___ today. (mưa)","Trả lời: What's the weather like?","Viết 2 câu về thời tiết.","Viết 2 câu về quần áo em mặc."],da:"sunny = nắng; windy = có gió; coat = áo khoác; rainy."},
+{t:"Đọc hiểu ngắn",k:[["Tìm tên","tìm tên người/nhân vật trong bài đọc"],["Tuổi","tìm thông tin về tuổi"],["Sở thích","điều người đó thích"],["Nơi chốn","địa điểm"],["Hoạt động","việc người đó làm"]],
+ ex:[["Hello! I'm Lucy. I'm ten years old.","Tôi là Lucy, 10 tuổi."],["I live with my family.","Tôi sống cùng gia đình."],["I go to school from Monday to Friday.","Tôi đi học thứ Hai đến thứ Sáu."],["I like English and Art.","Tôi thích Tiếng Anh và Mỹ thuật."],["After school, I play badminton.","Sau giờ học, tôi chơi cầu lông."],["My best friend is Anna.","Bạn thân nhất của tôi là Anna."]],
+ bt:["Đọc: “Tom is nine. He likes cats.” Tom bao nhiêu tuổi?","Tom thích con gì?","Dịch: I live with my family.","Gạch chân động từ trong 2 câu mẫu.","Viết 4 câu giới thiệu bản thân."],da:"Tom 9 tuổi; Tom thích mèo; “Tôi sống cùng gia đình.”"},
+{t:"Sắp xếp và viết câu",k:[["Thứ tự câu","Chủ ngữ + động từ + phần còn lại"],["Viết hoa, dấu chấm","viết hoa chữ đầu câu và đặt dấu chấm cuối câu kể"]],
+ ex:[["My name is Hoa.","Tên em là Hoa."],["I go to school every day.","Em đi học mỗi ngày."],["She likes red flowers.","Cô ấy thích hoa đỏ."],["There are three books on the desk.","Có ba quyển sách trên bàn."],["My best friend is kind.","Bạn thân em tốt bụng."],["We play games after school.","Chúng em chơi sau giờ học."]],
+ bt:["Sắp xếp: is / This / book / my.","Sắp xếp: likes / She / apples.","Sửa câu: my name is nam","Dịch: Bạn thân của tôi tốt bụng.","Viết đoạn 5 câu về bản thân."],da:"“This is my book”; “She likes apples”; “My name is Nam.”"},
+{t:"Luyện dạng bài kiểm tra",k:[["Ôn từ vựng","xem lại các từ đã học"],["Chọn đáp án","chọn câu trả lời đúng"],["Điền từ","viết từ còn thiếu"],["Nối câu","nối các phần phù hợp"],["Sắp xếp câu","xếp từ thành câu đúng"],["Đọc hiểu","đọc và hiểu nội dung"]],
+ ex:[["What's your favourite subject?","Môn yêu thích của bạn là gì?"],["I like Science because it's interesting.","Em thích Khoa học vì thú vị."],["Can you ride a bike?","Bạn biết đi xe đạp không?"],["Yes, I can ride a bike.","Vâng, em biết đi xe đạp."],["My birthday is in May.","Sinh nhật em vào tháng Năm."],["I usually read books at night.","Em thường đọc sách buổi tối."]],
+ bt:["She (is/are) my friend.","He (have/has) a new bag.","I ___ swim. (can/can't – tự chọn theo khả năng)","Sắp xếp: English / like / I.","Viết 5 câu hỏi tự kiểm tra."],da:"is; has; can (nếu biết bơi); “I like English.”"},
+{t:"Luyện nghe và nói",k:[["Đọc to","phát âm thành tiếng"],["Nghe mẫu","bấm 🔊 để nghe cách phát âm mẫu"],["Lặp lại 2–3 lần","nói lại từ/câu 2–3 lần; luyện hỏi đáp"]],
+ ex:[["Hello. How are you?","Xin chào. Bạn khỏe không?"],["I'm fine, thank you.","Tôi khỏe, cảm ơn."],["What do you like?","Bạn thích gì?"],["I like drawing and reading.","Em thích vẽ và đọc sách."],["Can you help me, please?","Bạn giúp tôi được không?"],["Could you repeat, please?","Bạn có thể nhắc lại không?"]],
+ bt:["Đọc to 6 câu mẫu 3 lần.","Che nghĩa tiếng Việt và tự dịch.","Tự giới thiệu bằng 4 câu.","Đóng vai hỏi đáp: tên, tuổi, sở thích.","Bấm nghe 5 câu mẫu, nghe và chép lại."],da:"Đáp án cá nhân; chú ý phát âm rõ."},
+{t:"Đề tổng hợp",v:[["am / is / are","động từ to be: là / thì / ở"],["have / has","có"],["like / likes","thích"],["can","có thể / biết làm gì"]],k:[["Đại từ","từ dùng thay cho tên người/vật"],["Hiện tại đơn","nói thói quen, sự thật, việc thường xuyên xảy ra"],["Từ hỏi","what, who, where… dùng để đặt câu hỏi"]],
+ ex:[["I am in class four.","Em học lớp 4."],["My brother has a blue bike.","Anh/em trai có xe đạp xanh."],["She likes reading books.","Cô ấy thích đọc sách."],["We can play badminton.","Chúng em có thể chơi cầu lông."],["Where do you live?","Bạn sống ở đâu?"],["My parents work every day.","Bố mẹ em làm việc mỗi ngày."]],
+ bt:["I ___ ten years old. (am/is)","He ___ a sister. (have/has)","She (like/likes) music.","Đổi phủ định: I play football.","Viết 6 câu: tên, tuổi, gia đình, trường, sở thích, khả năng."],da:"I am ten years old; He has a sister; She likes music; I don't play football."},
+{t:"Kiểm tra cuối lộ trình",week:1,k:[["Từ vựng","kiểm tra nhớ nghĩa và cách viết từ"],["Mẫu câu","câu ví dụ để học cách nói/viết"],["Ngữ pháp","quy tắc ghép từ thành câu đúng"],["Đọc hiểu và viết","đọc để hiểu nội dung và luyện viết câu"]],
+ ex:[["My name is Minh and I am ten years old.","Em tên Minh và 10 tuổi."],["I live with my parents and my sister.","Em sống cùng bố mẹ và chị/em gái."],["I go to school from Monday to Friday.","Em đi học thứ Hai đến thứ Sáu."],["My favourite subject is English.","Môn yêu thích là Tiếng Anh."],["I can ride a bike, but I can't swim.","Em biết đi xe đạp nhưng không biết bơi."],["I like reading books after school.","Em thích đọc sách sau giờ học."]],
+ bt:["Viết 10 từ tiếng Anh và nghĩa.","She ___ my friend. (is/are)","Sửa lỗi: He don't like milk.","Đọc và dịch 3 câu mẫu.","Viết đoạn 6–8 câu giới thiệu bản thân."],da:"is; “He doesn't like milk.”"}
+];
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let cur=Math.min(store.get("dc.day",0),DAYS.length-1);
+let progress=store.get("dc.progress",{});
+let slowRate=store.get("dc.slow",0.65);
+
+// ---- Giọng đọc ----
+const synth=window.speechSynthesis;
+let voice=null,queue=[],playingAll=false;
+function pickVoice(){
+  if(!synth)return;
+  const vs=synth.getVoices();
+  voice=vs.find(v=>/^en-GB/i.test(v.lang)&&/Google|Natural|Online/i.test(v.name))||vs.find(v=>/^en-US/i.test(v.lang)&&/Google|Natural|Online/i.test(v.name))||vs.find(v=>/^en-GB/i.test(v.lang))||vs.find(v=>/^en-US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null;
+}
+if(synth){pickVoice();synth.onvoiceschanged=pickVoice}else $("noVoice").hidden=false;
+// Đọc tự nhiên hơn: "/" thành chỗ ngắt, bỏ dấu "…"
+const spoken=t=>t.replace(/\s*\/\s*/g,", ").replace(/…/g,"").replace(/;/g,",");
+let mark=null;
+function clearMark(){if(mark){mark.classList.remove("speaking");mark=null}}
+function say(text,rate,el,onend){
+  if(!synth){$("noVoice").hidden=false;return}
+  synth.cancel();clearMark();
+  const u=new SpeechSynthesisUtterance(spoken(text));
+  if(voice)u.voice=voice;u.lang=voice?voice.lang:"en-GB";u.rate=rate;
+  u.onstart=()=>{if(el){el.classList.add("speaking");mark=el}};
+  u.onend=()=>{clearMark();if(onend)onend()};
+  u.onerror=()=>{clearMark()};
+  // Chờ một nhịp sau cancel() để tránh lỗi mất tiếng trên một số trình duyệt
+  setTimeout(()=>synth.speak(u),80);
+}
+function stopAll(){playingAll=false;queue=[];if(synth)synth.cancel();clearMark();$("playAll").textContent="▶ Nghe cả 6 câu"}
+function playNext(){
+  if(!playingAll||!queue.length){stopAll();return}
+  const i=queue.shift(),li=$("examples").children[i];
+  li.scrollIntoView({block:"nearest",behavior:"smooth"});
+  say(DAYS[cur].ex[i][0],0.8,li,()=>setTimeout(playNext,700));
+}
+$("playAll").onclick=()=>{
+  if(playingAll){stopAll();return}
+  playingAll=true;queue=DAYS[cur].ex.map((_,i)=>i);$("playAll").textContent="■ Dừng";playNext();
+};
+
+// ---- Hiển thị ----
+function speakBtns(kind,i){return `<span class="speak"><button class="say" data-kind="${kind}" data-i="${i}" data-r="n" aria-label="Nghe">🔊 Nghe</button><button class="slow" data-kind="${kind}" data-i="${i}" data-r="s" aria-label="Nghe chậm">🐢 Chậm</button></span>`}
+function renderDays(){
+  const done=Object.values(progress).filter(p=>p&&p.hoc&&p.bai).length;
+  $("count").textContent=`Đã hoàn thành ${done}/${DAYS.length} ngày`;
+  $("days").innerHTML=DAYS.map((d,i)=>{const p=progress[i]||{};const cls=["day",d.week?"week":"",p.on?"review":(p.hoc&&p.bai?"done":"")].join(" ");
+    return `<button class="${cls}" role="listitem" data-day="${i}" aria-current="${i===cur}" title="Ngày ${i+1}: ${esc(d.t)}">${i+1}</button>`}).join("");
+}
+function render(){
+  stopAll();
+  const d=DAYS[cur];
+  $("eyebrow").textContent=`Ngày ${cur+1} / ${DAYS.length}`;
+  $("title").textContent=d.t;
+  $("vocab").innerHTML=(d.v||[]).map((w,i)=>`<div class="word"><span class="en">${esc(w[0])}</span><span class="vi">${esc(w[1])}</span>${speakBtns("v",i)}</div>`).join("");
+  $("vocab").hidden=!(d.v&&d.v.length);
+  $("know").innerHTML=(d.k||[]).map(k=>`<li><b>${esc(k[0])}</b> — ${esc(k[1])}</li>`).join("");
+  $("know").hidden=!(d.k&&d.k.length);
+  $("note").innerHTML=`<b>Ghi nhớ:</b> ${esc(d.n||NOTE_DEFAULT)}`;
+  $("examples").innerHTML=d.ex.map((e,i)=>`<li class="ex"><span class="num">${i+1}</span><div><div class="en">${esc(e[0])}</div><div class="vi">${esc(e[1])}</div></div>${speakBtns("e",i)}</li>`).join("");
+  $("tasks").innerHTML=d.bt.map(b=>`<li>${esc(b)}</li>`).join("");
+  $("ans").textContent=d.da;$("ans").hidden=true;$("showAns").textContent="Xem đáp án tham khảo";$("showAns").setAttribute("aria-expanded","false");
+  const p=progress[cur]||{};$("c-hoc").checked=!!p.hoc;$("c-bai").checked=!!p.bai;$("c-on").checked=!!p.on;
+  $("prev").disabled=cur===0;$("next").disabled=cur===DAYS.length-1;
+  document.querySelectorAll("#rate [data-rate]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.rate===slowRate));
+  renderDays();
+  store.set("dc.day",cur);
+}
+function go(i){cur=Math.max(0,Math.min(DAYS.length-1,i));render();window.scrollTo({top:0,behavior:"smooth"})}
+
+// ---- Sự kiện ----
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-kind]");if(!b)return;
+  stopAll();
+  const d=DAYS[cur],i=+b.dataset.i,item=b.dataset.kind==="v"?d.v[i]:d.ex[i];
+  say(item[0],b.dataset.r==="s"?slowRate:0.85,b.closest(".word,.ex"));
+});
+$("days").onclick=e=>{const b=e.target.closest("[data-day]");if(b)go(+b.dataset.day)};
+$("prev").onclick=()=>go(cur-1);
+$("next").onclick=()=>go(cur+1);
+$("showAns").onclick=()=>{const h=!$("ans").hidden;$("ans").hidden=h;$("showAns").textContent=h?"Xem đáp án tham khảo":"Ẩn đáp án";$("showAns").setAttribute("aria-expanded",String(!h))};
+$("rate").onclick=e=>{const b=e.target.closest("[data-rate]");if(!b)return;slowRate=+b.dataset.rate;store.set("dc.slow",slowRate);document.querySelectorAll("#rate [data-rate]").forEach(x=>x.setAttribute("aria-pressed",x===b))};
+[["c-hoc","hoc"],["c-bai","bai"],["c-on","on"]].forEach(([id,key])=>$(id).onchange=()=>{progress[cur]=Object.assign({},progress[cur],{[key]:$(id).checked});store.set("dc.progress",progress);renderDays()});
+document.addEventListener("keydown",e=>{if(e.target.matches("input,textarea"))return;if(e.key==="ArrowRight")go(cur+1);if(e.key==="ArrowLeft")go(cur-1)});
+
+render();
+</script>
+</body>
+</html>
