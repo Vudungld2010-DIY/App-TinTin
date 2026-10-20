@@ -12,7 +12,7 @@
   --bg:#f2f6fb; --surface:#ffffff; --ink:#1d2b3d; --muted:#5f6f84; --line:#d9e3ef;
   --accent:#2f7fd8; --accent-ink:#ffffff; --accent-soft:#e6f0fc;
   --slow:#1d9a5a; --slow-soft:#e3f6ec; --sun:#ffc93c; --sun-ink:#3d2d00; --sun-soft:#fff5d6;
-  --done:#1d9a5a; --review:#d9822b; --speaking:#fff1b8;
+  --done:#1d9a5a; --review:#d9822b; --speaking:#fff1b8; --bad:#d6453b; --bad-soft:#fde9e7;
   --display:"Baloo 2","Nunito",system-ui,sans-serif;
   --body:"Nunito",system-ui,"Segoe UI",sans-serif;
   color-scheme:light;
@@ -21,12 +21,12 @@
   --bg:#12171e; --surface:#1b222c; --ink:#e6edf5; --muted:#9aa9bb; --line:#2c3644;
   --accent:#4a95e8; --accent-ink:#ffffff; --accent-soft:#1d2d42;
   --slow:#43c27f; --slow-soft:#163024; --sun:#f5bd2e; --sun-ink:#2b1f00; --sun-soft:#3a3016;
-  --done:#43c27f; --review:#f0a050; --speaking:#4a3f12; color-scheme:dark}}
+  --done:#43c27f; --review:#f0a050; --speaking:#4a3f12; --bad:#ff7b70; --bad-soft:#3a1a18; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#12171e; --surface:#1b222c; --ink:#e6edf5; --muted:#9aa9bb; --line:#2c3644;
   --accent:#4a95e8; --accent-ink:#ffffff; --accent-soft:#1d2d42;
   --slow:#43c27f; --slow-soft:#163024; --sun:#f5bd2e; --sun-ink:#2b1f00; --sun-soft:#3a3016;
-  --done:#43c27f; --review:#f0a050; --speaking:#4a3f12; color-scheme:dark}
+  --done:#43c27f; --review:#f0a050; --speaking:#4a3f12; --bad:#ff7b70; --bad-soft:#3a1a18; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
@@ -85,6 +85,28 @@ h3{font-family:var(--display);font-size:22px;margin:0;display:flex;justify-conte
 .rate button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:4px 10px;font:800 13px var(--body);cursor:pointer}
 .rate button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .warn{color:var(--review);font-weight:700;font-size:14px}
+/* Luyện tập */
+.qscore{font-family:var(--body);font-size:15px;font-weight:800;background:var(--accent-soft);color:var(--accent);padding:4px 12px;border-radius:999px;font-variant-numeric:tabular-nums}
+.reading{background:var(--accent-soft);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-weight:700;line-height:1.6}
+.quiz{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:q}
+.qi{border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;counter-increment:q}
+.qi .qt{font-weight:800;font-size:17px;display:flex;gap:8px;align-items:baseline}
+.qi .qt::before{content:counter(q) ".";font-family:var(--display);color:var(--muted);min-width:1.4em}
+.qi .kind{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:auto;white-space:nowrap}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--ink);font:700 16px var(--body);padding:10px 12px;border-radius:12px;cursor:pointer;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--done);background:var(--slow-soft);color:var(--done)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.opt:disabled{cursor:default}
+.fill{display:flex;gap:8px;flex-wrap:wrap}
+.fill input{flex:1 1 180px;min-width:0;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:700 17px var(--body);padding:9px 12px;border-radius:12px}
+.fill input:focus{outline:none;border-color:var(--accent)}
+.fill input.right{border-color:var(--done);color:var(--done)}
+.fill input.wrong{border-color:var(--bad);color:var(--bad)}
+.qfb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:800}
+.qfb .ok{color:var(--done)}.qfb .no{color:var(--bad)}
+.qfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-weight:800}
 @media (max-width:760px){
   .wrap{grid-template-columns:1fr}
   .days{position:static}
@@ -132,6 +154,13 @@ h3{font-family:var(--display);font-size:22px;margin:0;display:flex;justify-conte
       <h3>B. Bài tập thực hành</h3>
       <ol class="tasks" id="tasks"></ol>
       <div class="answer"><button class="btn" id="showAns" aria-expanded="false">Xem đáp án tham khảo</button><p id="ans" hidden></p></div>
+    </section>
+
+    <section class="block" id="quizBlock">
+      <h3>C. Luyện tập: trắc nghiệm và điền từ <span class="qscore" id="qscore"></span></h3>
+      <div class="reading" id="reading" hidden></div>
+      <ol class="quiz" id="quiz"></ol>
+      <div class="qfoot"><span id="qresult" aria-live="polite"></span><button class="btn" id="qreset">↻ Làm lại 10 câu</button></div>
     </section>
 
     <section class="block">
@@ -239,6 +268,304 @@ const DAYS=[
  bt:["Viết 10 từ tiếng Anh và nghĩa.","She ___ my friend. (is/are)","Sửa lỗi: He don't like milk.","Đọc và dịch 3 câu mẫu.","Viết đoạn 6–8 câu giới thiệu bản thân."],da:"is; “He doesn't like milk.”"}
 ];
 
+// Bài luyện tập: mỗi ngày 10 câu, tự soạn theo chủ đề của ngày.
+// "m|câu hỏi|đáp án đúng|sai|sai" = trắc nghiệm (thứ tự đáp án được xáo trộn khi hiển thị)
+// "f|câu hỏi|đáp án" = điền từ; nhiều đáp án chấp nhận được thì ngăn bằng "/"
+const QUIZ=[
+`m|___ am a pupil.|I|He|She
+m|Lan is my friend. ___ is nine.|She|He|They
+m|Nam and I are classmates. ___ are in class 4.|We|They|He
+m|This is my cat. ___ is white.|It|She|They
+m|My father is a doctor. ___ is kind.|He|She|It
+m|Tom and Mary are from England. ___ are my friends.|They|We|He
+f|"Chúng em" tiếng Anh là ___.|we
+f|My mother is a teacher. ___ is at school. (cô ấy)|She
+f|"Họ" tiếng Anh là ___.|they
+f|___ are my best friend. (bạn)|You`,
+`m|I ___ a student.|am|is|are
+m|She ___ my sister.|is|am|are
+m|They ___ happy.|are|is|am
+m|My books ___ new.|are|is|am
+m|The cat ___ small.|is|are|am
+m|We ___ in class 4.|are|is|am
+f|He ___ ten years old.|is
+f|You ___ my friend.|are
+f|I ___ at home.|am
+f|Mai and Lan ___ good students.|are`,
+`m|___! My name is Minh.|Hello|Goodbye|Thanks
+m|What's your ___?|name|old|fine
+m|How are you? – I'm ___, thank you.|fine|nine|name
+m|Nice to ___ you.|meet|eat|see at
+m|Chào buổi sáng: Good ___!|morning|night|evening
+m|This ___ my friend, Lan.|is|are|am
+f|My name ___ Hoa.|is
+f|What's ___ name? – My name is Nam.|your
+f|How ___ you? – I'm fine.|are
+f|Nice to meet you, ___. (cũng vậy)|too`,
+`m|3 + 2 = ?|five|four|six
+m|"tám" tiếng Anh là:|eight|eighteen|six
+m|How ___ are you? – I'm nine.|old|many|name
+m|I have ___ pencils. (2)|two|too|to
+m|There ___ five books.|are|is|am
+m|10 − 1 = ?|nine|ten|seven
+f|Viết bằng chữ: 4|four
+f|Viết bằng chữ: 7|seven
+f|I am ___ years old. (10)|ten
+f|Viết bằng chữ: 3|three`,
+`m|"màu đỏ" là:|red|blue|green
+m|This is ___ book.|a|an|two
+m|This is ___ apple.|an|a|two
+m|My bag ___ blue.|is|are|am
+m|The sky is ___. (xanh dương)|blue|yellow|red
+m|"thước kẻ" là:|ruler|pen|book
+f|Bananas are ___. (màu vàng)|yellow
+f|The leaf is ___. (xanh lá)|green
+f|I have a ___. (bút)|pen
+f|This is a red ___. (quyển sách)|book`,
+`m|My ___ is my dad.|father|mother|sister
+m|"mẹ" là:|mother|father|brother
+m|This is my sister. ___ is eight.|She|He|They
+m|This is my brother. ___ is tall.|He|She|It
+m|I love my ___. (gia đình)|family|friend|school
+m|My mother ___ a teacher.|is|are|am
+f|"anh/em trai" là: ___|brother
+f|"chị/em gái" là: ___|sister
+f|This is my ___. (mẹ)|mother
+f|My ___ is kind. (bố)|father`,
+`m|She ___ my sister.|is|are|am
+m|___ are happy. (chúng em)|We|He|She
+m|How old are you? – I'm ___.|ten|fine|Nam
+m|My school bag is ___. (đỏ)|red|blue|green
+m|I have two ___. (anh/em trai)|brothers|brother|sister
+m|Hello, ___ name is Mai.|my|I|me
+f|I ___ ten years old.|am
+f|Viết bằng chữ: 8|eight
+f|We ___ in class 4.|are
+f|What's your ___? – My name is An.|name`,
+`m|"môn Toán" là:|Maths|Music|Art
+m|"môn Âm nhạc" là:|Music|Maths|English
+m|My classroom ___ big.|is|are|am
+m|I go to ___ every day.|school|teacher|book
+m|What is your favourite ___? – English.|subject|animal|colour
+m|We study ___ on Monday. (Khoa học)|Science|Art|Music
+f|"môn Mỹ thuật" là: ___|Art
+f|"phòng học" là: ___|classroom
+f|I like ___. (môn Tiếng Anh)|English
+f|I have Music ___. (hôm nay)|today`,
+`m|"thứ Hai" là:|Monday|Sunday|Tuesday
+m|"Chủ nhật" là:|Sunday|Saturday|Monday
+m|Today ___ Friday.|is|are|am
+m|I have English ___ Tuesday.|on|in|at
+m|What ___ is it today? – It's Monday.|day|time|old
+m|Ngày đứng sau Wednesday là:|Thursday|Tuesday|Friday
+f|"thứ Bảy" là: ___|Saturday
+f|"thứ Tư" là: ___|Wednesday
+f|"thứ Sáu" là: ___|Friday
+f|We play football ___ Sunday.|on`,
+`m|The book is ___ the table. (trên)|on|in|under
+m|The cat is ___ the chair. (dưới)|under|on|in
+m|The ball is ___ the box. (trong)|in|on|behind
+m|The tree is ___ the house. (phía sau)|behind|in|on
+m|The bag is ___ the desk. (bên cạnh)|next to|under|in
+m|Where ___ the pen? – It's on the desk.|is|are|am
+f|"ở dưới" là: ___|under
+f|"ở trên" là: ___|on
+f|The teacher is ___ the classroom. (trong)|in
+f|"bên cạnh" là: ___|next to`,
+`m|I ___ a blue bag.|have|has|am
+m|She ___ two sisters.|has|have|is
+m|We ___ English today.|have|has|are
+m|He ___ a new bike.|has|have|is
+m|My cat ___ green eyes.|has|have|are
+m|They ___ many books.|have|has|is
+f|I ___ a pencil. (have/has)|have
+f|Lan ___ a doll. (have/has)|has
+f|He ___ a cat. (have/has)|has
+f|You ___ a nice bag. (have/has)|have`,
+`m|"mũi" là:|nose|mouth|ear
+m|"cao" là:|tall|short|long
+m|She ___ long hair.|has|have|is
+m|He ___ tall.|is|has|are
+m|I have two ___. (mắt)|eyes|eye|ears
+m|My eyes ___ brown.|are|is|has
+f|"đầu" là: ___|head
+f|"miệng" là: ___|mouth
+f|The boy has ___ hair. (ngắn)|short
+f|"đôi tai" là: ___|ears`,
+`m|I ___ apples.|like|likes|liking
+m|She ___ music.|likes|like|liking
+m|He ___ cats.|likes|like|liking
+m|They ___ English.|like|likes|liking
+m|My friend ___ drawing.|likes|like|liking
+m|We ___ playing football.|like|likes|is
+f|Mai ___ bananas. (like/likes)|likes
+f|You ___ Maths. (like/likes)|like
+f|My brother ___ dogs. (like/likes)|likes
+f|I ___ reading books. (like/likes)|like`,
+`m|He ___ a ruler.|has|have|is
+m|The cat is ___ the table. (dưới)|under|on|in
+m|She ___ Music.|likes|like|have
+m|I have English ___ Monday.|on|in|at
+m|We ___ at school.|are|is|am
+m|My ruler is ___ my bag. (trong)|in|on|under
+f|They ___ a big classroom. (have/has)|have
+f|"thứ Ba" là: ___|Tuesday
+f|My book is ___ the desk. (trên)|on
+f|Nam ___ football. (like/likes)|likes`,
+`m|I can ___.|swim|swims|swimming
+m|Birds ___ fly.|can|can't|are
+m|A fish ___ walk.|can't|can|is
+m|___ you ride a bike? – Yes, I can.|Can|Do|Are
+m|She can ___.|sing|sings|singing
+m|Can you swim? – No, I ___.|can't|can|am not
+f|Can he dance? – Yes, he ___.|can
+f|I ___ fly. (không thể)|can't/cannot/can not
+f|She can ___ a bike. (đi xe)|ride
+f|Cats ___ climb. (có thể)|can`,
+`m|I ___ up at six o'clock.|get|go|have
+m|I ___ breakfast at six thirty.|have|go|get
+m|I go to ___ at nine. (đi ngủ)|bed|breakfast|teeth
+m|I ___ my teeth every morning.|brush|wash|have
+m|What time ___ you get up?|do|does|are
+m|7:00 đọc là:|seven o'clock|six o'clock|seven thirty
+f|I go ___ school at seven.|to
+f|I do my ___ in the evening. (bài tập về nhà)|homework
+f|"thức dậy" là: get ___|up
+f|I get up ___ six o'clock.|at`,
+`m|She ___ to school.|walks|walk|walking
+m|I ___ football after school.|play|plays|playing
+m|He ___ TV in the evening.|watches|watch|watchs
+m|They ___ books every day.|read|reads|reading
+m|My father ___ every day.|works|work|working
+m|Lan ___ English on Sunday.|studies|study|studys
+f|He ___ football. (play)|plays
+f|We ___ to school. (go)|go
+f|My mother ___ dinner. (cook)|cooks
+f|She ___ her teeth. (brush)|brushes`,
+`m|I ___ like coffee.|don't|doesn't|not
+m|She ___ play tennis.|doesn't|don't|isn't
+m|___ you like English?|Do|Does|Are
+m|___ he go to school by bus?|Does|Do|Is
+m|He doesn't ___ fish.|eat|eats|eating
+m|Do you like milk? – Yes, I ___.|do|does|am
+f|They ___ play football. (phủ định)|don't/do not
+f|___ she like music? (Do/Does)|Does
+f|Does Nam like cats? – No, he ___.|doesn't/does not
+f|We ___ like fish. (phủ định)|don't/do not`,
+`m|My brother ___ chess.|plays|play|playing
+m|They ___ milk. (không thích)|don't like|doesn't like|not like
+m|___ Nam like Maths?|Does|Do|Is
+m|Does she ___ cats?|like|likes|liking
+m|My sister ___ every night.|reads|read|reading
+m|We don't ___ in the classroom.|play|plays|playing
+f|My mother ___ dinner. (cook)|cooks
+f|___ they play badminton? (Do/Does)|Do
+f|He ___ like milk. (phủ định)|doesn't/does not
+f|I ___ my homework after school. (do)|do`,
+`m|___ is your name?|What|Where|Who
+m|___ do you live? – In Hanoi.|Where|What|When
+m|___ is that? – It's my teacher.|Who|What|Where
+m|___ is your birthday? – In May.|When|Where|Who
+m|How ___ are you? – I'm ten.|old|many|much
+m|___ do you go to school? – By bike.|How|What|Who
+f|___ is your favourite colour? – Blue.|What
+f|___ is he? – He is my brother.|Who
+f|___ are you? – I'm fine, thank you.|How
+f|___ is the cat? – It's under the chair.|Where`,
+`m|"bánh mì" là:|bread|rice|milk
+m|"nước" là:|water|milk|fish
+m|I ___ water every day.|drink|drinks|eat
+m|She ___ bananas.|likes|like|liking
+m|Would you like some milk? – Yes, ___.|please|thank|no
+m|Từ nào là đồ uống?|milk|rice|chicken
+f|"cơm/gạo" là: ___|rice
+f|"thịt gà" là: ___|chicken
+f|"quả táo" là: ___|apple
+f|I ___ like fish. (phủ định)|don't/do not`,
+`m|"con voi" là:|elephant|monkey|rabbit
+m|"con thỏ" là:|rabbit|bird|dog
+m|A bird ___ fly.|can|can't|is
+m|Elephants ___ big.|are|is|am
+m|Con vật nào biết bay?|bird|dog|cat
+m|I have a small ___. (chó)|dog|cat|fish
+f|"con mèo" là: ___|cat
+f|"con khỉ" là: ___|monkey
+f|"con cá" là: ___|fish
+f|My favourite animal ___ a rabbit.|is`,
+`m|It's ___. (trời nắng)|sunny|rainy|windy
+m|It's ___. (trời mưa)|rainy|sunny|hot
+m|It's cold. Put on your ___.|coat|T-shirt|book
+m|I wear a ___ in the sun. (mũ)|hat|coat|shoe
+m|What's the ___ like? – It's sunny.|weather|time|day
+m|"nóng" là:|hot|cold|windy
+f|It's ___. (trời có gió)|windy
+f|"lạnh" là: ___|cold
+f|"áo phông" là: ___|T-shirt/t shirt/tshirt
+f|It's ___ today. (mưa)|rainy`,
+`m|How old is Tom?|nine|ten|eight
+m|Where does Tom live?|in London|in Hanoi|in Paris
+m|What subjects does Tom like?|Maths and Music|English and Art|Science
+m|What does Tom do after school?|He plays football.|He plays badminton.|He reads books.
+m|Who is Tom's friend?|Ben|Lucy|Anna
+m|What colour is Tom's cat?|black|white|brown
+f|Tom goes to school from Monday to ___.|Friday
+f|Tom lives with his ___.|family
+f|Tom has a ___. (con vật)|cat
+f|Tom is ___ years old. (viết bằng chữ)|nine`,
+`m|Sắp xếp: is / This / book / my|This is my book.|My book is this.|This my is book.
+m|Sắp xếp: likes / She / apples|She likes apples.|Likes she apples.|She apples likes.
+m|Câu nào viết đúng?|My name is Nam.|my name is nam.|My name is nam
+m|Sắp xếp: school / go / I / to|I go to school.|I to go school.|Go I to school.
+m|Sắp xếp: kind / is / friend / My|My friend is kind.|Kind is my friend.|My is friend kind.
+m|Câu nào viết đúng?|We play games after school.|we play games after school.|We play games after school
+f|Sắp xếp: are / We / happy → ___|We are happy.
+f|Sắp xếp: three / There / books / are → ___|There are three books.
+f|Sắp xếp: English / like / I → ___|I like English.
+f|Sắp xếp: is / name / My / Hoa → ___|My name is Hoa.`,
+`m|She ___ my friend.|is|are|am
+m|He ___ a new bag.|has|have|is
+m|What's your favourite ___? – English.|subject|animal|food
+m|My birthday is ___ May.|in|on|at
+m|Can you ride a bike? – Yes, I ___.|can|do|am
+m|I like Science ___ it's interesting.|because|and|but
+f|I ___ read books at night. (thường xuyên)|usually
+f|Sắp xếp: English / like / I → ___|I like English.
+f|He ___ swim. (không thể)|can't/cannot/can not
+f|They ___ in class 4. (am/is/are)|are`,
+`m|How are you? – ___|I'm fine, thank you.|I'm ten.|My name is Lan.
+m|What's your name? – ___|My name is Lan.|I'm fine.|I'm nine.
+m|How old are you? – ___|I'm nine years old.|I'm fine.|It's Monday.
+m|What do you like? – ___|I like drawing.|I'm nine.|Yes, I do.
+m|Muốn nhờ người khác nhắc lại, em nói:|Could you repeat, please?|Can you swim?|What's your name?
+m|Muốn nhờ giúp đỡ, em nói:|Can you help me, please?|How are you?|Nice to meet you.
+f|Nice to meet ___. (bạn)|you
+f|I'm fine, thank ___.|you
+f|Can you help me, ___? (làm ơn)|please
+f|Hello. How ___ you?|are`,
+`m|I ___ ten years old.|am|is|are
+m|He ___ a sister.|has|have|is
+m|She ___ music.|likes|like|liking
+m|We ___ play badminton.|can|are|has
+m|Phủ định của "I play football." là:|I don't play football.|I doesn't play football.|I not play football.
+m|___ do you live?|Where|What|Who
+f|My parents ___ every day. (work)|work
+f|My brother ___ a blue bike. (have/has)|has
+f|She likes ___ books. (đọc)|reading
+f|I am in class ___. (4, viết bằng chữ)|four`,
+`m|She ___ my friend.|is|are|am
+m|Sửa lỗi "He don't like milk." thành:|He doesn't like milk.|He don't likes milk.|He not like milk.
+m|I can ride a bike, ___ I can't swim.|but|and|because
+m|I go to school ___ Monday to Friday.|from|on|in
+m|My favourite subject ___ English.|is|are|am
+m|I live ___ my parents.|with|on|at
+f|My name ___ Minh.|is
+f|I like ___ books after school. (đọc)|reading
+f|"thứ Năm" là: ___|Thursday
+f|I ___ ten years old.|am`
+].map(block=>block.split("\n").map(line=>{const p=line.split("|");return p[0]==="m"?{t:"m",q:p[1],a:p[2],o:p.slice(2)}:{t:"f",q:p[1],a:p[2]}}));
+// Đoạn đọc hiểu cho Ngày 24
+const READING={23:"Hi! I'm Tom. I'm nine years old. I live in London with my family. I go to school from Monday to Friday. I like Maths and Music. After school, I play football with my friend Ben. I have a cat. It is black."};
+
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -306,17 +633,71 @@ function render(){
   const p=progress[cur]||{};$("c-hoc").checked=!!p.hoc;$("c-bai").checked=!!p.bai;$("c-on").checked=!!p.on;
   $("prev").disabled=cur===0;$("next").disabled=cur===DAYS.length-1;
   document.querySelectorAll("#rate [data-rate]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.rate===slowRate));
+  renderQuiz();
   renderDays();
   store.set("dc.day",cur);
 }
 function go(i){cur=Math.max(0,Math.min(DAYS.length-1,i));render();window.scrollTo({top:0,behavior:"smooth"})}
 
+// ---- Luyện tập trắc nghiệm / điền từ ----
+let qstate=[];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/[.!?]+\s*$/,"").replace(/\s+/g," ").trim();
+// Câu tiếng Anh hoàn chỉnh để đọc sau khi trả lời
+function fullSentence(q){
+  const a=q.a.split("/")[0];
+  if(q.q.includes("→")||!q.q.includes("___"))return a;
+  let s=q.q.replace("___",a).replace(/\([^)]*\)/g,"");
+  if(s.includes(":"))s=s.slice(s.lastIndexOf(":")+1);
+  s=s.replace(/\s+/g," ").trim();
+  // Câu còn chữ tiếng Việt (vd: "Chúng em" tiếng Anh là ___) thì chỉ đọc đáp án
+  return /[^\x00-\x7F–’]/.test(s)?a:s;
+}
+function renderQuiz(){
+  const qs=QUIZ[cur]||[];
+  qstate=qs.map(()=>null);
+  const rd=READING[cur];
+  $("reading").hidden=!rd;
+  $("reading").innerHTML=rd?`<div><b>Đọc đoạn văn rồi trả lời:</b></div><div>${esc(rd)}</div>${speakBtns("rd",0)}`:"";
+  $("quiz").innerHTML=qs.map((q,i)=>{
+    const body=q.t==="m"
+      ?`<div class="opts">${shuffle(q.o).map(o=>`<button class="opt" data-q="${i}" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>`
+      :`<form class="fill" data-q="${i}"><input id="fill-${cur}-${i}" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Gõ đáp án…" aria-label="Đáp án câu ${i+1}"><button class="btn primary" type="submit">Kiểm tra</button></form>`;
+    return `<li class="qi" id="qi-${i}"><div class="qt"><span>${esc(q.q)}</span><span class="kind">${q.t==="m"?"Trắc nghiệm":"Điền từ"}</span></div>${body}<div class="qfb" hidden></div></li>`;
+  }).join("");
+  updateScore();
+}
+function answer(i,val){
+  if(qstate[i]!==null)return;
+  const q=QUIZ[cur][i],ok=q.a.split("/").some(a=>norm(a)===norm(val));
+  qstate[i]=ok;
+  const li=$("qi-"+i);
+  if(q.t==="m"){li.querySelectorAll(".opt").forEach(b=>{b.disabled=true;if(b.dataset.v===q.a)b.classList.add("right");else if(b.dataset.v===val)b.classList.add("wrong")})}
+  else{const inp=li.querySelector("input");inp.readOnly=true;inp.classList.add(ok?"right":"wrong");li.querySelector("button[type=submit]").disabled=true}
+  const fb=li.querySelector(".qfb");fb.hidden=false;
+  fb.innerHTML=(ok?`<span class="ok">✓ Đúng rồi!</span>`:`<span class="no">✗ Đáp án: ${esc(q.a.split("/")[0])}</span>`)+`<span class="speak"><button class="say" data-kind="q" data-i="${i}" data-r="n">🔊 Nghe câu</button><button class="slow" data-kind="q" data-i="${i}" data-r="s">🐢 Chậm</button></span>`;
+  updateScore();
+}
+function updateScore(){
+  const n=qstate.length,done=qstate.filter(x=>x!==null).length,right=qstate.filter(x=>x).length;
+  $("qscore").textContent=`${right}/${n} đúng`;
+  const best=(progress[cur]||{}).best;
+  if(done===n&&n){
+    if(best==null||right>best){progress[cur]=Object.assign({},progress[cur],{best:right});store.set("dc.progress",progress)}
+    $("qresult").textContent=right===n?"Xuất sắc! Đúng cả 10 câu.":right>=8?`Giỏi lắm! Được ${right}/${n} câu.`:`Được ${right}/${n} câu. Làm lại để cao điểm hơn nhé!`;
+  }else $("qresult").textContent=best!=null?`Kỷ lục ngày này: ${best}/${n}`:`Đã làm ${done}/${n} câu`;
+}
+$("quiz").addEventListener("click",e=>{const b=e.target.closest(".opt");if(b&&!b.disabled)answer(+b.dataset.q,b.dataset.v)});
+$("quiz").addEventListener("submit",e=>{e.preventDefault();const f=e.target.closest("form[data-q]");if(!f)return;const v=f.querySelector("input").value;if(v.trim())answer(+f.dataset.q,v)});
+$("qreset").onclick=()=>{renderQuiz();$("quizBlock").scrollIntoView({block:"start",behavior:"smooth"})};
+
 // ---- Sự kiện ----
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-kind]");if(!b)return;
   stopAll();
-  const d=DAYS[cur],i=+b.dataset.i,item=b.dataset.kind==="v"?d.v[i]:d.ex[i];
-  say(item[0],b.dataset.r==="s"?slowRate:0.85,b.closest(".word,.ex"));
+  const d=DAYS[cur],i=+b.dataset.i,k=b.dataset.kind;
+  const text=k==="v"?d.v[i][0]:k==="e"?d.ex[i][0]:k==="q"?fullSentence(QUIZ[cur][i]):READING[cur];
+  say(text,b.dataset.r==="s"?slowRate:0.85,b.closest(".word,.ex,.qi,.reading"));
 });
 $("days").onclick=e=>{const b=e.target.closest("[data-day]");if(b)go(+b.dataset.day)};
 $("prev").onclick=()=>go(cur-1);
